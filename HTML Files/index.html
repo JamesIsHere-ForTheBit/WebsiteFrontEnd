@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambercrombie & Phish - Clothing Store</title>
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Age Verification Modal with California Privacy Info -->
+    <div id="ageModal" class="modal">
+        <div class="modal-content age-modal">
+            <h2>Welcome to Ambercrombie & Phish</h2>
+            
+            <div class="age-question">
+                <p class="age-title">Please verify your age to continue</p>
+                <div class="modal-buttons">
+                    <button class="btn-yes" onclick="verifyAge(true)">I am 18 or older</button>
+                    <button class="btn-no" onclick="verifyAge(false)">I am under 18</button>
+                </div>
+            </div>
+
+            <div class="privacy-summary">
+                <h3><i class="fas fa-shield-alt"></i> California Privacy & Minor Protections</h3>
+                
+                <div class="privacy-item">
+                    <strong>Privacy by Default</strong>
+                    <p>If you're under 18, your privacy settings are automatically set to the highest level. We only collect what's necessary (like shipping info).</p>
+                </div>
+
+                <div class="privacy-item">
+                    <strong>Your Rights (Under 18)</strong>
+                    <p>California users can request removal of any content they've posted. We never use "dark patterns" or track minors for advertising.</p>
+                </div>
+
+                <div class="privacy-item">
+                    <strong>Age Verification</strong>
+                    <p>We treat all users as minors unless we're reasonably sure you're 18+. Users under 13 require parental consent (COPPA).</p>
+                </div>
+
+                <div class="privacy-item">
+                    <strong>Data Protection</strong>
+                    <p>We follow CCPA/CPRA rules - no selling data of users under 16. You'll be notified immediately if any data breach occurs.</p>
+                </div>
+
+                <div class="privacy-item">
+                    <strong>Safety & Accessibility</strong>
+                    <p>Our site is accessible to all (WCAG 2.1 compliant). We ethically source all products with no child labor, following California law.</p>
+                </div>
+
+                <div class="privacy-item">
+                    <strong>Age-Appropriate Design</strong>
+                    <p>For users under 18: maximum privacy by default, no tracking, no dark patterns - just a safe shopping experience.</p>
+                </div>
+
+                <p class="privacy-note">By continuing, you agree to our <a href="#" onclick="showTerms()">Terms</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1 class="cursive-logo">Ambercrombie & Phish</h1>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="dropdown">
+                        <a href="#">Men <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="#" onclick="filterProducts('men', 'all'); return false;">All Men's</a>
+                            <a href="#" onclick="filterProducts('men', 'tshirts'); return false;">T-Shirts</a>
+                            <a href="#" onclick="filterProducts('men', 'jeans'); return false;">Jeans</a>
+                            <a href="#" onclick="filterProducts('men', 'jackets'); return false;">Jackets</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Women <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="#" onclick="filterProducts('women', 'all'); return false;">All Women's</a>
+                            <a href="#" onclick="filterProducts('women', 'dresses'); return false;">Dresses</a>
+                            <a href="#" onclick="filterProducts('women', 'tops'); return false;">Tops</a>
+                            <a href="#" onclick="filterProducts('women', 'jeans'); return false;">Jeans</a>
+                            <a href="#" onclick="filterProducts('women', 'sweaters'); return false;">Sweaters</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Kids <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="#" onclick="filterProducts('kids', 'all'); return false;">All Kids</a>
+                            <a href="#" onclick="filterProducts('kids', 'boys'); return false;">Boys</a>
+                            <a href="#" onclick="filterProducts('kids', 'girls'); return false;">Girls</a>
+                            <a href="#" onclick="filterProducts('kids', 'baby'); return false;">Baby</a>
+                        </div>
+                    </li>
+                    <li><a href="#" onclick="filterProducts('all', 'new'); return false;">New Arrivals</a></li>
+                    <li><a href="#" onclick="filterProducts('all', 'sale'); return false;">Sale</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="#" onclick="showLoginModal()"><i class="fas fa-user"></i></a>
+                <a href="#" onclick="showCart()"><i class="fas fa-shopping-cart"></i><span id="cartCount">0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login/Signup Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Welcome to Abercrombie & Phish</h2>
+            <div id="loginForm" class="form-container">
+                <form onsubmit="handleSignIn(event)" id="signinForm">
+                    <div class="form-group">
+                        <label for="signin-email">Email:</label>
+                        <input type="email" id="signin-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signin-password">Password:</label>
+                        <input type="password" id="signin-password" required>
+                    </div>
+                    <button type="submit" class="btn-signin">Sign In</button>
+                </form>
+                <p class="form-switch">Don't have an account? <a href="#" onclick="showSignUpForm()">Sign Up</a></p>
+                <button class="btn-guest" onclick="continueAsGuest()">Continue as Guest</button>
+            </div>
+
+            <div id="signupForm" class="form-container" style="display: none;">
+                <form onsubmit="handleSignUp(event)" id="signupForm">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name:</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email:</label>
+                        <input type="email" id="signup-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password:</label>
+                        <input type="password" id="signup-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password:</label>
+                        <input type="password" id="signup-confirm" required>
+                    </div>
+                    <button type="submit" class="btn-signup">Create Account</button>
+                </form>
+                <p class="form-switch">Already have an account? <a href="#" onclick="showSignInForm()">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal (Hidden) -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content admin-modal">
+            <span class="close" onclick="closeAdminLoginModal()">&times;</span>
+            <h2><i class="fas fa-shield-alt"></i> Admin Portal</h2>
+            <p class="admin-note">Authorized personnel only</p>
+            <div class="form-container">
+                <form onsubmit="handleAdminLogin(event)" id="adminForm">
+                    <div class="form-group">
+                        <label for="admin-email">Admin Email:</label>
+                        <input type="email" id="admin-email" required placeholder="admin@abercrombiephish.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Password:</label>
+                        <input type="password" id="admin-password" required placeholder="••••••••">
+                    </div>
+                    <div class="form-group mfa-group" id="mfaGroup" style="display: none;">
+                        <label for="admin-mfa">MFA Code:</label>
+                        <input type="text" id="admin-mfa" maxlength="6" placeholder="Enter 6-digit code">
+                        <small>For demo: Enter any 6 digits</small>
+                    </div>
+                    <button type="submit" class="btn-admin-login">Access Admin Dashboard</button>
+                </form>
+                <p class="admin-hint">Demo: admin@admin.com / admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Summer Collection 2026</h2>
+            <p>Discover the perfect blend of style and comfort</p>
+            <a href="#" class="btn-shop" onclick="filterProducts('all', 'new'); return false;">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <h2>Shop by Category</h2>
+        <div class="category-grid">
+            <div class="category-card" onclick="filterProducts('men', 'all')">
+                <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=500" alt="Men's Fashion">
+                <h3>Men</h3>
+                <a href="#" class="btn-category">Shop Men</a>
+            </div>
+            <div class="category-card" onclick="filterProducts('women', 'all')">
+                <img src="https://img.abercrombie.com/is/image/anf/KIC_139-3463-1333-100_model2?policy=product-medium" alt="Women's Fashion">
+                <h3>Women</h3>
+                <a href="#" class="btn-category">Shop Women</a>
+            </div>
+            <div class="category-card" onclick="filterProducts('kids', 'all')">
+                <img src="https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=500" alt="Kids' Fashion">
+                <h3>Kids</h3>
+                <a href="#" class="btn-category">Shop Kids</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="featured-products">
+        <h2>Featured Products</h2>
+        <div class="product-grid" id="productGrid">
+            <!-- Products will be loaded here via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Former Orders Section -->
+    <section id="formerOrdersSection" class="former-orders" style="display: none;">
+        <h2>Your Previous Orders</h2>
+        <div class="orders-grid" id="ordersGrid">
+            <!-- Orders will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews">
+        <h2>What Our Customers Say</h2>
+        <div class="review-grid">
+            <div class="review-card">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p>"Amazing quality clothes! The fit is perfect and the material is so comfortable. Definitely my new favorite store!"</p>
+                <p class="reviewer">- Sarah M.</p>
+            </div>
+            <div class="review-card">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p>"Great customer service and fast shipping. The clothes look exactly like they do online. Highly recommend!"</p>
+                <p class="reviewer">- Mike T.</p>
+            </div>
+            <div class="review-card">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <p>"Love the unique style and the quality is top-notch. The kids section has some really cute options too!"</p>
+                <p class="reviewer">- Jessica R.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content cart-modal">
+            <span class="close" onclick="closeCart()">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cartItems"></div>
+            
+            <!-- Services Section -->
+            <div class="services-section">
+                <h3>Add Services</h3>
+                <div class="service-option">
+                    <input type="checkbox" id="giftWrap" onchange="updateServices()">
+                    <label for="giftWrap">Gift Wrapping - $9.99</label>
+                </div>
+                <div class="service-option">
+                    <input type="checkbox" id="customWording" onchange="toggleCustomText()">
+                    <label for="customWording">Custom Wording on Shirt - $9.99</label>
+                </div>
+                <div id="customTextContainer" class="custom-text-container" style="display: none;">
+                    <label for="customText">Enter your custom text (max 20 characters):</label>
+                    <input type="text" id="customText" maxlength="20" oninput="validateCustomText()" placeholder="Type here...">
+                    <div class="character-count"><span id="charCount">0</span>/20 characters</div>
+                </div>
+                <div class="service-option">
+                    <input type="checkbox" id="fastDelivery" onchange="updateServices()">
+                    <label for="fastDelivery">Fast Delivery - $14.99</label>
+                </div>
+            </div>
+
+            <div class="cart-total">
+                <p>Subtotal: $<span id="cartSubtotal">0.00</span></p>
+                <p>Services: $<span id="servicesTotal">0.00</span></p>
+                <p class="grand-total">Total: $<span id="cartTotal">0.00</span></p>
+            </div>
+            <div class="cart-buttons">
+                <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
+                <button class="btn-continue" onclick="closeCart()">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content receipt-modal">
+            <span class="close" onclick="closeReceipt()">&times;</span>
+            <h2>Thank You for Your Purchase!</h2>
+            <div id="receiptContent" class="receipt-content"></div>
+            <button class="btn-continue" onclick="closeReceipt()">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-button" onclick="toggleChatbot()">
+            <i class="fas fa-robot"></i>
+            <span>AI Assistant</span>
+        </div>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3><i class="fas fa-robot"></i> Abercrombie & Phish AI Assistant</h3>
+                <button onclick="toggleChatbot()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hi! I'm your AI shopping assistant. How can I help you today?
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your question here..." onkeypress="handleChatInput(event)">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div class="chatbot-suggestions">
+                <button onclick="quickQuestion('What are your shipping options?')">Shipping</button>
+                <button onclick="quickQuestion('How do I return an item?')">Returns</button>
+                <button onclick="quickQuestion('What sizes do you have?')">Sizes</button>
+                <button onclick="quickQuestion('Do you have a student discount?')">Discounts</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+        <div class="admin-header">
+            <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
+            <div class="admin-user-info">
+                <span id="adminEmail"></span>
+                <button onclick="logoutAdmin()" class="btn-admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+        
+        <div class="admin-stats">
+            <div class="stat-card">
+                <i class="fas fa-box"></i>
+                <div class="stat-info">
+                    <h3>Total Products</h3>
+                    <p id="totalProducts">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="stat-info">
+                    <h3>Active Orders</h3>
+                    <p id="activeOrders">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-info">
+                    <h3>Total Users</h3>
+                    <p id="totalUsers">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-dollar-sign"></i>
+                <div class="stat-info">
+                    <h3>Revenue</h3>
+                    <p id="totalRevenue">$0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-sections">
+            <div class="admin-section">
+                <h2><i class="fas fa-users-cog"></i> User Management</h2>
+                <div class="admin-table-container">
+                    <table class="admin-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Created</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h2><i class="fas fa-boxes"></i> Product Management</h2>
+                <div class="admin-table-container">
+                    <table class="admin-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h2><i class="fas fa-history"></i> Recent Orders</h2>
+                <div class="admin-table-container">
+                    <table class="admin-table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin-section full-width">
+                <h2><i class="fas fa-history"></i> Audit Log</h2>
+                <div class="audit-controls">
+                    <button onclick="AuditLogger.exportLogs()" class="btn-admin">Export Logs</button>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table" id="auditTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Admin</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userDetailsModal" class="modal">
+        <div class="modal-content user-details-modal">
+            <span class="close" onclick="closeUserDetails()">&times;</span>
+            <h2>User Details</h2>
+            <div id="userDetailsContent" class="user-details-content"></div>
+            <div class="user-actions">
+                <button onclick="deleteUser()" class="btn-danger">Delete User</button>
+                <button onclick="disableUser()" class="btn-warning">Disable Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>Ambercrombie & Phish is your premier destination for trendy and comfortable clothing for the whole family.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Ambercrombie & Phish. All rights reserved. For school project only.</p>
+            <div class="admin-hidden-link" ondblclick="showAdminLogin()"></div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
