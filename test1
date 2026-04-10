@@ -1,0 +1,11 @@
+<?php
+$conn = new mysqli('192.168.20.10', 'webuser', 'StrongPass123!', 'ambercrombie');
+if ($conn->connect_error) {
+    echo 'FAILED: ' . $conn->connect_error;
+} else {
+    echo 'SUCCESS - connected to database';
+    $result = $conn->query('SELECT COUNT(*) as total FROM users');
+    $row = $result->fetch_assoc();
+    echo ' - Users in DB: ' . $row['total'];
+}
+?>
