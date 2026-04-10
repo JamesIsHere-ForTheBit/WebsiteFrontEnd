@@ -11,7 +11,7 @@ const CONFIG = {
     },
     // API endpoints - Change these when you add backend
     api: {
-        baseUrl: '', // Add your VM IP later, e.g., 'http://192.168.1.100:3000/api'
+        baseUrl: 'http://192.168.20.20/api',
         endpoints: {
             adminLogin: '/admin/login',
             verifyMFA: '/admin/verify-mfa',
@@ -285,7 +285,10 @@ const API = {
             ...options.headers
         };
         
-        if (session?.token) {
+        const skipAuth =
+            endpoint === '/login.php' ||
+            endpoint === '/register.php';
+        if (session?.token && !skipAuth) {
             headers['Authorization'] = `Bearer ${session.token}`;
         }
         
@@ -693,19 +696,54 @@ function removeFromCart(productId) {
 // ============================================
 function showSignUpForm() {
     document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('signupForm').style.display = 'block';
+    document.getElementById('signupFormPanel').style.display = 'block';
 }
 
 function showSignInForm() {
-    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('signupFormPanel').style.display = 'none';
     document.getElementById('loginForm').style.display = 'block';
 }
 
-function handleSignIn(event) {
+async function handleSignIn(event) {
     event.preventDefault();
     
     const email = document.getElementById('signin-email').value;
     const password = document.getElementById('signin-password').value;
+    
+    if (CONFIG.api.baseUrl) {
+        if (!email || !password) {
+            alert('Invalid email or password.');
+            return;
+        }
+        const data = await API.post('/login.php', { email, password });
+        if (!data) {
+            alert('Login failed. Please try again.');
+            return;
+        }
+        if (data.success === false || data.ok === false) {
+            alert(data.message || data.error || data.msg || 'Login failed.');
+            return;
+        }
+        const token = data.token || data.access_token || null;
+        const userPayload = data.user != null && typeof data.user === 'object' ? data.user : data;
+        const userForSession = {
+            id: userPayload.id != null ? userPayload.id : Date.now(),
+            name: userPayload.name || email.split('@')[0],
+            email: userPayload.email || email,
+            isAdmin: userPayload.isAdmin || false
+        };
+        const session = SessionManager.setSession(userForSession, token);
+        isLoggedIn = true;
+        currentUser = session.user;
+        closeLoginModal();
+        alert(`Welcome back, ${currentUser.name}!`);
+        showOrderHistory();
+        if (pendingCheckout) {
+            pendingCheckout = false;
+            beginCheckout();
+        }
+        return;
+    }
     
     if (email && password) {
         isLoggedIn = true;
@@ -729,7 +767,7 @@ function handleSignIn(event) {
     }
 }
 
-function handleSignUp(event) {
+async function handleSignUp(event) {
     event.preventDefault();
     
     const name = document.getElementById('signup-name').value;
@@ -739,6 +777,41 @@ function handleSignUp(event) {
     
     if (password !== confirm) {
         alert('Passwords do not match!');
+        return;
+    }
+    
+    if (CONFIG.api.baseUrl) {
+        if (!(name && email && password)) {
+            alert('Please fill in your name, email, and password.');
+            return;
+        }
+        const data = await API.post('/register.php', { name, email, password });
+        if (!data) {
+            alert('Registration failed. Please try again.');
+            return;
+        }
+        if (data.success === false || data.ok === false) {
+            alert(data.message || data.error || data.msg || 'Registration failed.');
+            return;
+        }
+        const token = data.token || data.access_token || null;
+        const userPayload = data.user != null && typeof data.user === 'object' ? data.user : data;
+        const userForSession = {
+            id: userPayload.id != null ? userPayload.id : Date.now(),
+            name: userPayload.name || name,
+            email: userPayload.email || email,
+            isAdmin: userPayload.isAdmin || false
+        };
+        const session = SessionManager.setSession(userForSession, token);
+        isLoggedIn = true;
+        currentUser = session.user;
+        closeLoginModal();
+        alert(`Account created successfully! Welcome, ${currentUser.name}!`);
+        showOrderHistory();
+        if (pendingCheckout) {
+            pendingCheckout = false;
+            beginCheckout();
+        }
         return;
     }
     
