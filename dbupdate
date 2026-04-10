@@ -1,3 +1,4 @@
+<?php
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
 $allowed = ['http://192.168.20.20', 'http://192.168.40.30', 'http://192.168.40.20', 'http://192.168.10.10'];
 
@@ -15,3 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
+
+$host = '192.168.20.10';
+$db   = 'ambercrombie';
+$user = 'webuser';
+$pass = 'StrongPass123!';
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Database connection failed']);
+    exit();
+}
+
+$conn->set_charset('utf8mb4');
