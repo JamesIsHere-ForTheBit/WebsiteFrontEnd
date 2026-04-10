@@ -1,0 +1,1 @@
+API.post('/register.php', {name: 'Test User', email: 'test@test.com', password: 'Test123!'}).then(r => console.log(r));
