@@ -835,6 +835,20 @@ async function handleSignUp(event) {
     }
 }
 
+function showUserMenu() {
+    if (!isLoggedIn) {
+        showLoginModal();
+        return;
+    }
+    const displayName = (currentUser && currentUser.name) ||
+        (currentUser && currentUser.email && currentUser.email.split('@')[0]) ||
+        'User';
+    alert('Logged in as: ' + displayName);
+    if (confirm('Do you want to log out?')) {
+        logout();
+    }
+}
+
 function showLoginModal() {
     showSignInForm();
     document.getElementById('loginModal').style.display = 'block';
