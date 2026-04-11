@@ -1,0 +1,9 @@
+CREATE USER 'employee1'@'%' IDENTIFIED BY 'DOV6%Xa33Ym';
+CREATE USER 'employee2'@'%' IDENTIFIED BY '=t^9)3Hif3,U';
+CREATE USER 'guest1'@'%' IDENTIFIED BY 'M1mF7.q":My5';
+
+GRANT SELECT ON ambercrombie.* TO 'employee1'@'%';
+GRANT SELECT ON ambercrombie.* TO 'employee2'@'%';
+GRANT SELECT ON ambercrombie.* TO 'guest1'@'%';
+
+FLUSH PRIVILEGES;
