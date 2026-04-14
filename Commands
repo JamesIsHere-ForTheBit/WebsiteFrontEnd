@@ -1,0 +1,2 @@
+RHEL Commands to limit Python functionality
+echo "playerone ALL=(ALL) NOPASSWD: /usr/bin/systemctl is-active *, /usr/bin/systemctl restart *" | sudo tee /etc/sudoers.d/playerone
