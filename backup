@@ -1,0 +1,4 @@
+USE ambercrombie;
+CREATE USER 'backupuser'@'localhost' IDENTIFIED BY 'BackupUser2026!';
+GRANT SELECT, LOCK TABLES, SHOW VIEW, EVENT, TRIGGER ON ambercrombie.* TO 'backupuser'@'localhost';
+FLUSH PRIVILEGES;
