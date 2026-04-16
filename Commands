@@ -1,2 +1,5 @@
 RHEL Commands to limit Python functionality
 echo "playerone ALL=(ALL) NOPASSWD: /usr/bin/systemctl is-active *, /usr/bin/systemctl restart *" | sudo tee /etc/sudoers.d/playerone
+
+New-NetFirewallRule -DisplayName "Allow SMTP" -Direction Inbound -Protocol TCP -LocalPort 25 -Action Allow
+New-NetFirewallRule -DisplayName "Allow IMAP" -Direction Inbound -Protocol TCP -LocalPort 143 -Action Allow
