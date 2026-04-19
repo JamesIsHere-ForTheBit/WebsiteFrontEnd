@@ -3,3 +3,6 @@ echo "playerone ALL=(ALL) NOPASSWD: /usr/bin/systemctl is-active *, /usr/bin/sys
 
 New-NetFirewallRule -DisplayName "Allow SMTP" -Direction Inbound -Protocol TCP -LocalPort 25 -Action Allow
 New-NetFirewallRule -DisplayName "Allow IMAP" -Direction Inbound -Protocol TCP -LocalPort 143 -Action Allow
+
+sudo firewall-cmd --permanent --add-rich-rule='rule protocol value="icmp" drop'
+sudo firewall-cmd --reload
