@@ -33,3 +33,6 @@ RHEL-client
 
 curl -o wazuh-agent-4.7.5-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh-agent-4.7.5-1.x86_64.rpm
 scp wazuh-agent-4.7.5-1.x86_64.rpm playerone@192.168.40.20:/home/playerone/
+
+Win11-webserver
+  Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.7.5-1.msi -OutFile ${env.tmp}\wazuh-agent; msiexec.exe /i ${env.tmp}\wazuh-agent /q WAZUH_MANAGER='192.168.10.10' WAZUH_AGENT_NAME='webserver' WAZUH_REGISTRATION_SERVER='192.168.10.10'
