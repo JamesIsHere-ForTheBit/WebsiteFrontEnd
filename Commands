@@ -8,3 +8,6 @@ sudo firewall-cmd --permanent --add-rich-rule='rule protocol value="icmp" drop'
 sudo firewall-cmd --reload
 
 New-NetFirewallRule -DisplayName "Block ICMP Inbound" -Direction Inbound -Protocol ICMPv4 -Action Block
+
+curl -sO https://packages.wazuh.com/4.7/wazuh-install.sh
+sudo bash wazuh-install.sh -a
