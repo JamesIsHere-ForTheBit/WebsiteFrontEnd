@@ -6,3 +6,5 @@ New-NetFirewallRule -DisplayName "Allow IMAP" -Direction Inbound -Protocol TCP -
 
 sudo firewall-cmd --permanent --add-rich-rule='rule protocol value="icmp" drop'
 sudo firewall-cmd --reload
+
+New-NetFirewallRule -DisplayName "Block ICMP Inbound" -Direction Inbound -Protocol ICMPv4 -Action Block
