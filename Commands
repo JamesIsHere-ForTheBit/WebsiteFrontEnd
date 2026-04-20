@@ -30,3 +30,5 @@ RHEL-database
 
 RHEL-client
   curl -o wazuh-agent-4.7.5-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh-agent-4.7.5-1.x86_64.rpm && sudo WAZUH_MANAGER='192.168.10.10' WAZUH_AGENT_NAME='rhel-client' rpm -ihv wazuh-agent-4.7.5-1.x86_64.rpm
+
+curl -o wazuh-agent-4.7.5-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh-agent-4.7.5-1.x86_64.rpm
