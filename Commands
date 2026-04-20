@@ -15,7 +15,9 @@ sudo bash wazuh-install.sh -a
 Agents
 
 RHEL
-  curl -o wazuh-agent-4.7.5-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh-agent-4.7.5-1.x86_64.rpm && sudo WAZUH_MANAGER='192.168.10.10' WAZUH_AGENT_NAME='rhel-database' rpm -ihv wazuh-agent-4.7.5-1.x86_64.rpm
+  sudo systemctl daemon-reload
+  sudo systemctl enable wazuh-agent
+  sudo systemctl start wazuh-agent
 
 Win11-client
   Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.7.5-1.msi -OutFile ${env.tmp}\wazuh-agent; msiexec.exe /i ${env.tmp}\wazuh-agent /q WAZUH_MANAGER='192.168.10.10' WAZUH_AGENT_NAME='win11-client' WAZUH_REGISTRATION_SERVER='192.168.10.10'
